@@ -41,6 +41,10 @@ const cotizacionSchema = mongoose.Schema(
             required: true,
             trim: true,
         },
+        done: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,

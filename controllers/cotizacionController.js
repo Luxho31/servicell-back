@@ -1,6 +1,6 @@
 import Cotizacion from "../models/Cotizacion.js";
 
-const register = async (req, res) => {
+const createCotizacion = async (req, res) => {
     const cotizacion = new Cotizacion(req.body);
     try {
         const cotizacionGuardada = await cotizacion.save();
@@ -30,4 +30,4 @@ const deleteCotizacion = async (req, res) => {
     return res.status(200).json({ msg: "Cotizacion eliminada" });
 }
 
-export { register, getCotizaciones, getCotizacionById, updateCotizacion, deleteCotizacion };
+export { createCotizacion, getCotizaciones, getCotizacionById, updateCotizacion, deleteCotizacion };
