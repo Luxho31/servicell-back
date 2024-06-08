@@ -4,6 +4,7 @@ import cors from "cors";
 import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js";
 import cotizacionRoutes from "./routes/cotizacionRoutes.js";
+import repuestoRoutes from "./routes/repuestoRoutes.js";
 
 const app = express();
 app.use(express.json())
@@ -27,6 +28,7 @@ app.use(cors(corsOptions));
 // Endpoints
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/cotizaciones", cotizacionRoutes);
+app.use("/api/repuestos", repuestoRoutes);
 
 const PORT = process.env.PORT || 3000;
 

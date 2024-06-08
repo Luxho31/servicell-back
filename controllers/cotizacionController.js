@@ -29,10 +29,10 @@ const updateCotizacion = async (req, res) => {
     return res.status(200).json(cotizacion);
 }
 
-const deleteCotizacion = async (req, res) => {
-    await Cotizacion.findByIdAndDelete(req.params.id);
-    return res.status(200).json({ msg: "Cotizacion eliminada" });
-}
+// const deleteCotizacion = async (req, res) => {
+//     await Cotizacion.findByIdAndDelete(req.params.id);
+//     return res.status(200).json({ msg: "Cotizacion eliminada" });
+// }
 
 const sentEmail = async (req, res) => {
     const cotizacion = await Cotizacion.findById(req.params.id);
@@ -89,4 +89,4 @@ const generateInvoice = async (req, res) => {
     }
 }
 
-export { createCotizacion, getCotizaciones, getCotizacionById, updateCotizacion, deleteCotizacion, sentEmail, generateInvoice };
+export { createCotizacion, getCotizaciones, getCotizacionById, updateCotizacion, sentEmail, generateInvoice };
