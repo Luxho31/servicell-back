@@ -7,6 +7,9 @@ import cotizacionRoutes from "./routes/cotizacionRoutes.js";
 import repuestoRoutes from "./routes/repuestoRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
+// import mercadopago from "mercadopago"
+import { Preference, MercadoPagoConfig } from "mercadopago"
+
 const app = express();
 app.use(express.json())
 dotenv.config();
@@ -26,14 +29,68 @@ const dominiosPermitidos = [process.env.FRONTEND_URL];
 
 // app.use(cors(corsOptions));
 
+// Mercado pago
+// Configurar MercadoPago (reemplaza con tus credenciales reales)
+// mercadopago.configurations.setAccessToken('APP_USR-911176942514250-062113-773e06516eea3d6146d37d26de4cc3f5-1864627025');
+const client = new MercadoPagoConfig({ accessToken: 'TEST-605985810472705-061802-bc26711c25e75c5f11986ed30bbef3e8-1762277778' });
+
+
+// Ruta de prueba para recibir notificaciones de pago
+app.post('/pagos/notificacion', (req, res) => {
+    console.log('Notificación de pago recibida:');
+    console.log(req.body);
+    res.sendStatus(200);
+});
+
+// Ruta para iniciar un pago
+app.post('/pagar', async (req, res) => {
+
+    const preference = new Preference(client);
+
+    preference.create({
+        body: {
+            items: [
+                {
+                    title: 'Mi producto',
+                    quantity: 1,
+                    unit_price: 20
+                }
+            ],
+        }
+    })
+        .then(console.log)
+        .catch(console.log);
+});
+
+// Manejar rutas de éxito, pendiente y fracaso
+app.get('/pagos/success', (req, res) => {
+    res.send('Pago exitoso');
+});
+
+app.get('/pagos/pending', (req, res) => {
+    res.send('Pago pendiente');
+});
+
+app.get('/pagos/failure', (req, res) => {
+    res.send('Pago fallido');
+});
+// Mercado pago
+
 // Endpoints
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/cotizaciones", cotizacionRoutes);
 app.use("/api/repuestos", repuestoRoutes);
-app.use("/api/payment", paymentRoutes);
+// app.use("/api/payment", paymentRoutes);
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en: http://localhost:${PORT}`);
 });
+
+
+// REVISAR EL SIGUIENTE ENLACE PARA INTEGRAR MERCADO PAGO, ES UN REPOSITORIO DE GITHUB CON UN EJEMPLO DE INTEGRACION DE LA API
+// https://github.com/mercadopago/card-payment-sample/tree/1.0.0?tab=readme-ov-file
+
+// EN NODEJS
+// https://github.com/mercadopago/card-payment-sample-node/blob/1.0.0/index.js
