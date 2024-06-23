@@ -1,124 +1,85 @@
-// Step 1: Import the parts of the module you want to use
-import { MercadoPagoConfig, Payment } from 'mercadopago';
-import MercadoPagoEntity from "../models/MercadoPagoEntity.js"
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 
-// import mercadopago from "mercadopago"
+import { Preference, MercadoPagoConfig } from "mercadopago"
+import Orden from '../models/Orden.js';
+import Repuesto from '../models/Repuesto.js';
+
+// const client = new MercadoPagoConfig({ accessToken: 'TEST-605985810472705-061802-bc26711c25e75c5f11986ed30bbef3e8-1762277778' });
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-911176942514250-062113-773e06516eea3d6146d37d26de4cc3f5-1864627025' });
 
 const createOrder = async (req, res) => {
-    // mercadopago.configure({
-    //     // access_token: process.env.ACCESS_TOKEN_MP
-    //     access_token: "APP_USR-911176942514250-062021-91433ad2881fc4777132827883976717-1864627025"
-    // });
+    try {
+        const { productos, comprador } = req.body;
+        const preference = new Preference(client);
 
-    // Credencial Usuario de Prueba: APP_USR-911176942514250-062021-91433ad2881fc4777132827883976717-1864627025
-
-    //-----------------------------------
-
-    // const client = new MercadoPagoConfig({ accessToken: 'APP_USR-911176942514250-062021-91433ad2881fc4777132827883976717-1864627025'});
-
-    // const payment = new Payment(client);
-
-    // const body = {
-    //     transaction_amount: 12.34,
-    //     description: '<DESCRIPTION>',
-    //     payment_method_id: '<PAYMENT_METHOD_ID>',
-    //     payer: {
-    //         email: '<EMAIL>'
-    //     },
-    // };
-
-    // const requestOptions = {
-    //     idempotencyKey: '<IDEMPOTENCY_KEY>',
-    // };
-
-    // payment.create({ body, requestOptions }).then(console.log).catch(console.log);
-
-    //-----------------------------------------
-
-
-    // const result = await mercadopago.preferences.create(preference)
-
-    // const preference = {
-    //     items: [
-    //         {
-    //             title: 'Dummy Product',
-    //             unit_price: 100,
-    //             currency_id: 'PEN',
-    //             quantity: 1,
-    //         }
-    //     ],
-    //     back_urls: {
-    //         success: 'http://localhost:3000/success',
-    //         failure: 'http://localhost:3000/failure',
-    //         pending: 'http://localhost:3000/pending'
-    //     },
-    //     // auto_return: 'approved',
-    //     notification_url: 'https://webhook.site/0e7a8c5f-9f4b-4c6b-8b0b-2c2a6f7c8f8d',
-    //     // notification_url: 'http://localhost:3000/webhook',
-    // };
-    //  console.log(result);
-
-    // res.json(result.body);
-
-    //--------------------- NUEVO
-
-    // Primero crear preferencia, back_urls, create a payer, 
-
-
-    /*
-        items : [ {},{}],
-        user_ {
-            nombre
-        }
-    */
-
-    // mercadopago.configurations.setAccessToken('TEST-2903472833152664-062021-0571c10c50994f61dc370174c6c96a8b-1762277778');
-    // mercadopago.configurations.setAccessToken('APP_USR-911176942514250-062021-91433ad2881fc4777132827883976717-1864627025');
-
-
-    // Step 2: Initialize the client object
-    const client = new MercadoPagoConfig({ accessToken: 'APP_USR-911176942514250-062021-91433ad2881fc4777132827883976717-1864627025', options: { timeout: 5000 } });
-    const idempotencyKey = uuidv4()
-    // Step 3: Initialize the API object
-    // const payment = new Payment(client);
-    const payment = new MercadoPagoEntity(client);
-
-    // Step 4: Create the request object
-    const body = {
-        transaction_amount: 12.34,
-        description: 'Compra de productos electrónicos',
-        payment_method_id: 'visa',
-        payer: {
-            email: 'luisse24@hotmail.com'
-        },
-    };
-
-    // Step 5: Create request options object - Optional
-    const requestOptions = {
-        // idempotencyKey: '<IDEMPOTENCY_KEY>',
-        idempotencyKey,
-    };
-
-    // Step 6: Make the request
-    payment.create({ body, requestOptions })
-        .then(response => {
-            console.log('Transacción creada:', response);
-            // Aquí puedes manejar la respuesta como sea necesario
+        const response = await preference.create({
+            body: {
+                items: productos.map(producto => ({
+                    title: producto.title,
+                    quantity: producto.quantity,
+                    description: producto.description,
+                    unit_price: producto.unit_price
+                })),
+                payer: {
+                    name: comprador.name,
+                    surname: comprador.surname,
+                    email: comprador.email,
+                    phone: {
+                        area_code: comprador.phone.area_code,
+                        number: comprador.phone.number
+                    },
+                    identification: {
+                        type: comprador.identification.type,
+                        number: comprador.identification.number
+                    },
+                    address: {
+                        street_name: 'Insurgentes Sur',
+                        street_number: 1602,
+                        zip_code: '03940'
+                    }
+                },
+                back_urls: {
+                    success: 'http://localhost:3000/api/payment/success',
+                    failure: 'http://localhost:3000/api/payment/failure',
+                    pending: 'http://localhost:3000/api/payment/pending'
+                },
+                auto_return: 'approved', // Hace que el usuario sea redirigido automáticamente a la URL de retorno
+                notification_url: 'https://webhook.site/d9b459b6-bea3-4839-b0d8-7c26d1457744/webhook',
+            }
         })
-        .catch(error => {
-            console.error('Error al crear la transacción:', error);
-            // Aquí puedes manejar el error como sea necesario
-        });
+        // console.log(response);
+        res.send(response);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error creando la preferencia de pago');
+    }
+}
 
-    // const result = await mercadopago.preferences.create(preference)
+const notification = async (req, res) => {
+    // console.log('Notificación de pago recibida:');
+    // console.log(req.body);
+    // res.sendStatus(200);
+    // try {
+    //     const { type, data } = req.body;
 
-    // console.log(result);
-    //--------------------- NUEVO
+    //     if (type === 'payment') {
+    //         const payment_id = data.id;
+
+    //         // Aquí puedes obtener más detalles del pago si es necesario
+    //         const payment = await client.payment.get(payment_id);
+    //         console.log('Pago recibido:', payment);
+    //     }
+
+    //     res.sendStatus(200);
+    // } catch (error) {
+    //     console.error('Error procesando la notificación:', error);
+    //     res.sendStatus(500);
+    // }
 }
 
 const success = (req, res) => {
-    res.send('Payment successful');
+    // res.send('Payment successful');
+    res.json(req.query);
 }
 
 const failure = (req, res) => {
@@ -129,9 +90,43 @@ const pending = (req, res) => {
     res.send('Payment pending');
 }
 
-const receiveWebhook = (req, res) => {
-    console.log(req.query);
-    res.send('Webhook received');
+const receiveWebhook = async (req, res) => {
+    // console.log(req.query);
+    // // res.send('Webhook received');
+    // res.json(req.query);
+
+    const payment = req.query;
+
+    try {
+        if (payment.type === 'payment') {
+            // Aquí puedes obtener más detalles del pago si es necesario
+            const data = await client.payment.findById(payment['data.id']);
+            console.log(data);
+        }
+        // res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: error.message});
+        // return res.status(500).send('Error procesando el webhook');
+    }
+
+    // const { body } = req;
+    // console.log(body);
+
+    // if (body.action === 'payment.created') {
+    //     const payment = body.data;
+    //     console.log('Payment created:', payment);
+    //     res.json({payment});
+
+    //     // const order = await Orden.findOne({ preference_id: payment.order.id });
+
+    //     // if (order) {
+    //     //     order.estado_pago = 'aprobado';
+    //     //     await order.save();
+    //     // }
+    // }
+
+    // // res.sendStatus(200);
 }
 
-export { createOrder, success, failure, pending, receiveWebhook };
+export { createOrder, notification, success, failure, pending, receiveWebhook };

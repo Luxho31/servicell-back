@@ -16,46 +16,63 @@
 import mongoose from "mongoose";
 
 const ordenSchema = new mongoose.Schema(
-  {
-      action: {
-          type: String,
-          required: true
-      },
-      api_version: {
-          type: String,
-          required: true
-      },
-      data: {
-          id: {
-              type: String,
-              required: true
-          }
-      },
-      date_created: {
-          type: Date,  // Cambiado a tipo Date para almacenar fechas
-          required: true
-      },
-      orderId: {  // Cambiado de `id` a `orderId` para evitar confusiones
-          type: String,
-          required: true,
-          unique: true  // Asegura que cada orderId sea único
-      },
-      live_mode: {
-          type: Boolean,
-          required: true
-      },
-      type: {
-          type: String,
-          required: true
-      },
-      user_id: {
-          type: String,  // Cambiado a String si es un identificador único
-          required: true
-      },
-  },
-  {
-      timestamps: true  // Agrega createdAt y updatedAt automáticamente
-  }
+    //   {
+    //       action: {
+    //           type: String,
+    //           required: true
+    //       },
+    //       api_version: {
+    //           type: String,
+    //           required: true
+    //       },
+    //       data: {
+    //           id: {
+    //               type: String,
+    //               required: true
+    //           }
+    //       },
+    //       date_created: {
+    //           type: Date,  // Cambiado a tipo Date para almacenar fechas
+    //           required: true
+    //       },
+    //       orderId: {  // Cambiado de `id` a `orderId` para evitar confusiones
+    //           type: String,
+    //           required: true,
+    //           unique: true  // Asegura que cada orderId sea único
+    //       },
+    //       live_mode: {
+    //           type: Boolean,
+    //           required: true
+    //       },
+    //       type: {
+    //           type: String,
+    //           required: true
+    //       },
+    //       user_id: {
+    //           type: String,  // Cambiado a String si es un identificador único
+    //           required: true
+    //       },
+    //   },
+    {
+        productos: [
+            {
+                title: { type: String, required: true },
+                quantity: { type: Number, required: true },
+                unit_price: { type: Number, required: true }
+            }
+        ],
+        comprador: {
+            email: { type: String, required: true },
+            name: { type: String, required: true },
+            surname: { type: String, required: true }
+        },
+        preference_id: { type: String, required: true },
+        status: { type: String, default: 'pending' },
+        init_point: { type: String, required: true }
+    },
+    {
+        timestamps: true  // Agrega createdAt y updatedAt automáticamente
+    }
 );
 
 const Orden = mongoose.model("Orden", ordenSchema);
