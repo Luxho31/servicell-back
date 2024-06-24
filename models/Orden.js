@@ -4,27 +4,35 @@ const orderSchema = new mongoose.Schema(
     {
         productos: [
             {
-                repuesto: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Repuesto',
+                // repuesto: {
+                //     type: mongoose.Schema.Types.ObjectId,
+                //     ref: 'Repuesto',
+                //     required: true
+                // },
+                title: {
+                    type: String,
                     required: true
                 },
-                cantidad: {
+                description: {
+                    type: String,
+                    required: true
+                },
+                quantity: {
                     type: Number,
                     required: true
                 },
-                precio_unitario: {
+                unit_price: {
                     type: Number,
                     required: true
                 }
             }
         ],
         comprador: {
-            nombre: {
+            name: {
                 type: String,
                 required: true
             },
-            apellido: {
+            surname: {
                 type: String,
                 required: true
             },
@@ -32,29 +40,68 @@ const orderSchema = new mongoose.Schema(
                 type: String,
                 required: true
             },
-            telefono: {
-                area_codigo: String,
-                numero: String
+            phone: {
+                area_code: {
+                    type: String,
+                    required: true
+                },
+                number: {
+                    type: String,
+                    required: true
+                }
             },
-            direccion: {
-                calle: String,
-                numero: Number,
-                codigo_postal: String
+            identification: {
+                type: {
+                    type: String,
+                    required: true
+                },
+                number: {
+                    type: String,
+                    required: true
+                }
+            },
+            address: {
+                street_name: {
+                    type: String,
+                    required: true
+                },
+                street_number: {
+                    type: Number,
+                    required: true
+                },
+                zip_code: {
+                    type: String,
+                    required: true
+                },
             }
         },
         preference_id: {
             type: String,
-            required: true
+            required: true,
+            default: '-'
         },
-        estado_pago: {
+        payment_id: {
             type: String,
-            enum: ['pendiente', 'aprobado', 'fallido'],
-            default: 'pendiente'
+            required: true,
+            default: '-'
+        },
+        status: {
+            type: String,
+            enum: ['PENDING', 'SUCCESS', 'DENIED'],
+            default: 'PENDING'
         },
         fecha_creacion: {
             type: Date,
             default: Date.now
         }
+
+        // items: [ { title, quantity, unit_price } ]
+        // user_id
+        // fecha de creación de la orden
+        // payment_id: - *Debe cambiar despues de realizar el pago mostrando el id de la transacción
+        // preference_id (id)
+        // status: pending *Luego cambiar approved, denied
+
     },
     {
         timestamps: true

@@ -1,10 +1,10 @@
 import Repuesto from "../models/Repuesto.js";
 
 const createRepuesto = async (req, res) => {
+    const repuesto = new Repuesto(req.body);
     try {
-        const repuesto = new Repuesto(req.body);
-        await repuesto.save();
-        return res.status(201).json(repuesto);
+        const repuestoGuardado = await repuesto.save();
+        return res.status(201).json(repuestoGuardado);
     } catch (error) {
         return res.status(400).json({ msg: "Error al crear repuesto", message: error.message });
     }

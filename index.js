@@ -5,6 +5,7 @@ import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js";
 import cotizacionRoutes from "./routes/cotizacionRoutes.js";
 import repuestoRoutes from "./routes/repuestoRoutes.js";
+import carritoRoutes from "./routes/carritoRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
 // import mercadopago from "mercadopago"
@@ -16,18 +17,18 @@ dotenv.config();
 conectarDB();
 
 const dominiosPermitidos = [process.env.FRONTEND_URL];
-// const corsOptions = {
-//     origin: function (origin, callback) {
-//         if (dominiosPermitidos.indexOf(origin) !== -1) {
-//             // El origen del Request esta permitido
-//             callback(null, true);
-//         } else {
-//             callback(new Error("No permitido por CORS"));
-//         }
-//     },
-// };
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (dominiosPermitidos.indexOf(origin) !== -1) {
+            // El origen del Request esta permitido
+            callback(null, true);
+        } else {
+            callback(new Error("No permitido por CORS"));
+        }
+    },
+};
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 // // Mercado pago
 // const client = new MercadoPagoConfig({ accessToken: 'TEST-605985810472705-061802-bc26711c25e75c5f11986ed30bbef3e8-1762277778' });
@@ -79,6 +80,7 @@ const dominiosPermitidos = [process.env.FRONTEND_URL];
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/cotizaciones", cotizacionRoutes);
 app.use("/api/repuestos", repuestoRoutes);
+app.use("/api/carrito", carritoRoutes);
 app.use("/api/payment", paymentRoutes);
 
 const PORT = process.env.PORT || 3000;

@@ -83,4 +83,22 @@ const verificarToken = async (req, res) => {
     }
 };
 
-export { register, login, perfil, verificarToken };
+const getInfoUserByToken = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await Usuario.findById(decoded.id);
+        
+        if (!user) {
+            return res.status(404).json({ msg: "Usuario no encontrado" });
+        }
+
+        // res.json({ id: user._id, email: user.email, rol: user.rol });
+        // res.json({ id: user._id });
+        res.json(user._id);
+    } catch (error) {
+        return res.status(401).json({ msg: "Token no válido" });
+    }
+};
+
+export { register, login, perfil, verificarToken, getInfoUserByToken };
