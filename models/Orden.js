@@ -15,7 +15,7 @@ const orderSchema = new mongoose.Schema(
                 },
                 description: {
                     type: String,
-                    required: true
+                    // required: true
                 },
                 quantity: {
                     type: Number,
@@ -43,35 +43,35 @@ const orderSchema = new mongoose.Schema(
             phone: {
                 area_code: {
                     type: String,
-                    required: true
+                    // required: true
                 },
                 number: {
                     type: String,
-                    required: true
+                    // required: true
                 }
             },
             identification: {
                 type: {
                     type: String,
-                    required: true
+                    // required: true
                 },
                 number: {
                     type: String,
-                    required: true
+                    // required: true
                 }
             },
             address: {
                 street_name: {
                     type: String,
-                    required: true
+                    // required: true
                 },
                 street_number: {
                     type: Number,
-                    required: true
+                    // required: true
                 },
                 zip_code: {
                     type: String,
-                    required: true
+                    // required: true
                 },
             }
         },

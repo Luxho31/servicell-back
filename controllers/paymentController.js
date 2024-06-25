@@ -15,41 +15,50 @@ const client = new MercadoPagoConfig({ accessToken: 'APP_USR-911176942514250-062
 // Luego debo crear la preferencia de pago
 const createOrder = async (req, res) => {
 
-        const { productos, comprador } = req.body;
-        // Guardar la orden en la base de datos
-        const newOrder = new Orden({
-            productos: productos.map(producto => ({
-                title: producto.title,
-                quantity: producto.quantity,
-                description: producto.description,
-                unit_price: producto.unit_price
-            })),
-            comprador: {
-                name: comprador.name,
-                surname: comprador.surname,
-                email: comprador.email,
-                phone: {
-                    area_code: comprador.phone.area_code,
-                    number: comprador.phone.number
-                },
-                identification: {
-                    type: comprador.identification.type,
-                    number: comprador.identification.number
-                },
-                address: {
-                    street_name: 'Insurgentes Sur',
-                    street_number: 1602,
-                    zip_code: '03940'
-                }
-            },
-        });
+    const { productos, comprador } = req.body;
 
-        // Guardar la orden en la base de datos
-        await newOrder.save();
+    // Validar que productos y comprador estén definidos
+    if (!productos || !Array.isArray(productos) || productos.length === 0) {
+        return res.status(400).send('Productos no válidos');
+    }
+
+    if (!comprador || typeof comprador !== 'object') {
+        return res.status(400).send('Comprador no válido');
+    }
+
+    // Guardar la orden en la base de datos
+    const newOrder = new Orden({
+        productos: productos.map(producto => ({
+            title: producto.title,
+            quantity: producto.quantity,
+            // description: producto.description,
+            unit_price: producto.unit_price
+        })),
+        comprador: {
+            name: comprador.name,
+            surname: comprador.surname,
+            email: comprador.email,
+            // phone: {
+            //     area_code: comprador.phone.area_code,
+            //     number: comprador.phone.number
+            // },
+            // identification: {
+            //     type: comprador.identification.type,
+            //     number: comprador.identification.number
+            // },
+            // address: {
+            //     street_name: 'Insurgentes Sur',
+            //     street_number: 1602,
+            //     zip_code: '03940'
+            // }
+        },
+    });
+
+    // Guardar la orden en la base de datos
+    await newOrder.save();
 
 
     try {
-        const { productos, comprador } = req.body;
         const preference = new Preference(client);
 
         const response = await preference.create({
@@ -57,7 +66,7 @@ const createOrder = async (req, res) => {
                 items: productos.map(producto => ({
                     title: producto.title,
                     quantity: producto.quantity,
-                    description: producto.description,
+                    // description: producto.description,
                     unit_price: producto.unit_price
                 })),
                 external_reference: '200', // numero de orden.getId()
@@ -65,26 +74,26 @@ const createOrder = async (req, res) => {
                     name: comprador.name,
                     surname: comprador.surname,
                     email: comprador.email,
-                    phone: {
-                        area_code: comprador.phone.area_code,
-                        number: comprador.phone.number
-                    },
-                    identification: {
-                        type: comprador.identification.type,
-                        number: comprador.identification.number
-                    },
-                    address: {
-                        street_name: 'Insurgentes Sur',
-                        street_number: 1602,
-                        zip_code: '03940'
-                    }
+                    // phone: {
+                    //     area_code: comprador.phone.area_code,
+                    //     number: comprador.phone.number
+                    // },
+                    // identification: {
+                    //     type: comprador.identification.type,
+                    //     number: comprador.identification.number
+                    // },
+                    // address: {
+                    //     street_name: 'Insurgentes Sur',
+                    //     street_number: 1602,
+                    //     zip_code: '03940'
+                    // }
                 },
                 back_urls: {
-                    success: 'http://localhost:3000/api/payment/success',
+                    success: 'http://localhost:5173/',
                     failure: 'http://localhost:3000/api/payment/failure',
                     pending: 'http://localhost:3000/api/payment/pending'
                 },
-                auto_return: 'approved', // Hace que el usuario sea redirigido automáticamente a la URL de retorno
+                // auto_return: 'approved', // Hace que el usuario sea redirigido automáticamente a la URL de retorno
                 notification_url: 'https://webhook.site/d9b459b6-bea3-4839-b0d8-7c26d1457744/webhook',
             }
         })
@@ -106,28 +115,6 @@ const createOrder = async (req, res) => {
     }
 }
 
-const notification = async (req, res) => {
-    // console.log('Notificación de pago recibida:');
-    // console.log(req.body);
-    // res.sendStatus(200);
-    // try {
-    //     const { type, data } = req.body;
-
-    //     if (type === 'payment') {
-    //         const payment_id = data.id;
-
-    //         // Aquí puedes obtener más detalles del pago si es necesario
-    //         const payment = await client.payment.get(payment_id);
-    //         console.log('Pago recibido:', payment);
-    //     }
-
-    //     res.sendStatus(200);
-    // } catch (error) {
-    //     console.error('Error procesando la notificación:', error);
-    //     res.sendStatus(500);
-    // }
-}
-
 const success = (req, res) => {
     // res.send('Payment successful');
     res.json(req.query);
@@ -142,10 +129,6 @@ const pending = (req, res) => {
 }
 
 const receiveWebhook = async (req, res) => {
-    // console.log(req.query);
-    // // res.send('Webhook received');
-    // res.json(req.query);
-
     const payment = req.query;
 
     try {
@@ -160,24 +143,6 @@ const receiveWebhook = async (req, res) => {
         return res.status(500).json({ error: error.message });
         // return res.status(500).send('Error procesando el webhook');
     }
-
-    // const { body } = req;
-    // console.log(body);
-
-    // if (body.action === 'payment.created') {
-    //     const payment = body.data;
-    //     console.log('Payment created:', payment);
-    //     res.json({payment});
-
-    //     // const order = await Orden.findOne({ preference_id: payment.order.id });
-
-    //     // if (order) {
-    //     //     order.estado_pago = 'aprobado';
-    //     //     await order.save();
-    //     // }
-    // }
-
-    // // res.sendStatus(200);
 }
 
-export { createOrder, notification, success, failure, pending, receiveWebhook };
+export { createOrder, success, failure, pending, receiveWebhook };
