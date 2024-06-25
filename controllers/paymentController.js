@@ -4,10 +4,10 @@ import { Preference, MercadoPagoConfig } from "mercadopago"
 import Orden from '../models/Orden.js';
 import Repuesto from '../models/Repuesto.js';
 
-// const client = new MercadoPagoConfig({ accessToken: 'TEST-605985810472705-061802-bc26711c25e75c5f11986ed30bbef3e8-1762277778' }); // Token principal
-// const client = new MercadoPagoConfig({ accessToken: 'APP_USR-911176942514250-062113-773e06516eea3d6146d37d26de4cc3f5-1864627025' }); // Token de prueba vendedor
-const client = new MercadoPagoConfig({ accessToken: 'TEST-2661763250208715-062313-71f3790248b40e8fd04540a94b053e40-1762277778' }); // Token Checkout Pro Prueba
-// const client = new MercadoPagoConfig({ accessToken: 'TEST-8021851533821614-032518-5e2291ab742081851d0e8355030bbab8-485417535' });
+// const client = new MercadoPagoConfig({ accessToken: 'TEST-605985810472705-061802-bc26711c25e75c5f11986ed30bbef3e8-1762277778' }); // Token principal Wallet connect
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-911176942514250-062113-773e06516eea3d6146d37d26de4cc3f5-1864627025' }); // Token de prueba vendedor Wallet connect
+// const client = new MercadoPagoConfig({ accessToken: 'TEST-2661763250208715-062313-71f3790248b40e8fd04540a94b053e40-1762277778' }); // Token principal Checkout Pro Prueba
+// const client = new MercadoPagoConfig({ accessToken: 'TEST-8021851533821614-032518-5e2291ab742081851d0e8355030bbab8-485417535' }); // Token Diego
 
 
 // Primero debo crear la orden

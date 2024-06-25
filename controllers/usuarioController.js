@@ -64,10 +64,27 @@ const login = async (req, res) => {
     // }
 };
 
-const perfil = (req, res) => {
-    const { usuario } = req;
-    // res.json({ perfil: usuario });
-    res.json("usuario");
+const perfil = async (req, res) => {
+    // const { usuario } = req;
+    // res.json("usuario");
+
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await Usuario.findById(decoded.id);
+        
+        if (!user) {
+            return res.status(404).json({ msg: "Usuario no encontrado" });
+        }
+
+        // res.json({ id: user._id, email: user.email, rol: user.rol });
+        console.log({ id: user._id, name: user.name, lastname: user.lastname, email: user.email, rol: user.rol });
+        res.json({ id: user._id, name: user.name, lastname: user.lastname, email: user.email, rol: user.rol });
+        // res.json({ id: user._id });
+        // res.json(user._id);
+    } catch (error) {
+        return res.status(401).json({ msg: "Token no válido" });
+    }
 };
 
 const verificarToken = async (req, res) => {
