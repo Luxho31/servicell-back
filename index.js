@@ -7,6 +7,7 @@ import cotizacionRoutes from "./routes/cotizacionRoutes.js";
 import repuestoRoutes from "./routes/repuestoRoutes.js";
 import carritoRoutes from "./routes/carritoRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import marcaRoutes from "./routes/marcaRoutes.js";
 
 // import mercadopago from "mercadopago"
 import { Preference, MercadoPagoConfig } from "mercadopago"
@@ -82,6 +83,7 @@ app.use("/api/cotizaciones", cotizacionRoutes);
 app.use("/api/repuestos", repuestoRoutes);
 app.use("/api/carrito", carritoRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/Marcas", marcaRoutes);
 
 const PORT = process.env.PORT || 3000;
 
