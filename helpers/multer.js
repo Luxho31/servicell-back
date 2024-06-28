@@ -8,9 +8,11 @@ const storage = multer.diskStorage({
         // const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         // cb(null, file.fieldname + '-' + uniqueSuffix + '.pdf');
         cb(null, file.originalname);
+        // cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 
 const upload = multer({ storage: storage }).single('archivo');
+// const upload = multer({ storage: storage });
 
 export default upload;

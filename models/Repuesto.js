@@ -4,31 +4,35 @@ const respuestoSchema = new mongoose.Schema(
     {
         replacement_type: {
             type: String,
-            required: true
+            required: true,
         },
         brand: {
             type: String,
-            required: true
+            required: true,
         },
         model: {
             type: String,
-            required: true
+            required: true,
         },
         description: {
             type: String,
-            required: true
+            required: true,
         },
         price: {
             type: Number,
-            required: true
+            required: true,
         },
         stock: {
             type: Number,
-            required: true
-        }
+            required: true,
+        },
+        // image_url: {
+        //     type: String,
+        //     required: true,
+        // },
     },
     {
-        timestamps: true
+        timestamps: true,
     }
 );
 
