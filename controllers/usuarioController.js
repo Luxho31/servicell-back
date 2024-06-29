@@ -54,7 +54,10 @@ const login = async (req, res) => {
         // res.cookie("token", token);
         res.json({
             _id: existeUsuario._id,
+            name: existeUsuario.name,
+            lastname: existeUsuario.lastname,
             email: existeUsuario.email,
+            rol: existeUsuario.rol,
             token: generarJWT( existeUsuario._id, existeUsuario.rol),
         });
         // return res.status(200).json({ msg: "Usuario autenticado correctamente" });
@@ -100,22 +103,23 @@ const verificarToken = async (req, res) => {
     }
 };
 
-const getInfoUserByToken = async (req, res) => {
-    try {
-        const token = req.headers.authorization.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await Usuario.findById(decoded.id);
+// const getInfoUserByToken = async (req, res) => {
+//     try {
+//         const token = req.headers.authorization.split(" ")[1];
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//         const user = await Usuario.findById(decoded.id);
         
-        if (!user) {
-            return res.status(404).json({ msg: "Usuario no encontrado" });
-        }
+//         if (!user) {
+//             return res.status(404).json({ msg: "Usuario no encontrado" });
+//         }
 
-        // res.json({ id: user._id, email: user.email, rol: user.rol });
-        // res.json({ id: user._id });
-        res.json(user._id);
-    } catch (error) {
-        return res.status(401).json({ msg: "Token no válido" });
-    }
-};
+//         // res.json({ id: user._id, email: user.email, rol: user.rol });
+//         // res.json({ id: user._id });
+//         res.json(user._id);
+//     } catch (error) {
+//         return res.status(401).json({ msg: "Token no válido" });
+//     }
+// };
 
-export { register, login, perfil, verificarToken, getInfoUserByToken };
+// export { register, login, perfil, verificarToken, getInfoUserByToken };
+export { register, login, perfil, verificarToken };

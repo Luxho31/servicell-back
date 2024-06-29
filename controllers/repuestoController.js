@@ -1,11 +1,41 @@
 import Repuesto from "../models/Repuesto.js";
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs'
+import dotenv from 'dotenv';
+dotenv.config();
+
+cloudinary.config({
+    cloud_name: 'dhhbyf3gg',
+    api_key: '329237329215877',
+    api_secret: 'mK3rsysV1cRTZKbSeyxPhRUfXZ4'
+});
+
+// const createRepuesto = async (req, res) => {
+//     const repuesto = new Repuesto(req.body);
+//     try {
+//         const repuestoGuardado = await repuesto.save();
+//         return res.status(201).json(repuestoGuardado);
+//     } catch (error) {
+//         return res.status(400).json({ msg: "Error al crear repuesto", message: error.message });
+//     }
+// }
 
 const createRepuesto = async (req, res) => {
     const repuesto = new Repuesto(req.body);
     try {
+        console.log(req.file)
+        if (!req.file) {
+            return res.status(400).json({ msg: "Error: No file uploaded" });
+        }
+
+        const result = await cloudinary.uploader.upload(req.file.path);
+        repuesto.image_url = result.secure_url;
+
         const repuestoGuardado = await repuesto.save();
+        fs.unlinkSync(req.file.path)
         return res.status(201).json(repuestoGuardado);
     } catch (error) {
+        console.error("Error al crear repuesto", error);
         return res.status(400).json({ msg: "Error al crear repuesto", message: error.message });
     }
 }
