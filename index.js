@@ -21,7 +21,8 @@ conectarDB();
 const dominiosPermitidos = [process.env.FRONTEND_URL];
 const corsOptions = {
     origin: function (origin, callback) {
-        if (dominiosPermitidos.indexOf(origin) !== -1) {
+        // if (dominiosPermitidos.indexOf(origin) !== -1) {
+        if (!origin || dominiosPermitidos.indexOf(origin) !== -1) {
             // El origen del Request esta permitido
             callback(null, true);
         } else {

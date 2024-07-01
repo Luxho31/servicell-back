@@ -69,6 +69,7 @@ const createOrder = async (req, res) => {
                     // description: producto.description,
                     unit_price: producto.unit_price
                 })),
+                // external_reference: '200', // numero de orden.getId()
                 external_reference: '200', // numero de orden.getId()
                 payer: {
                     name: comprador.name,
@@ -90,7 +91,7 @@ const createOrder = async (req, res) => {
                 },
                 back_urls: {
                     success: 'http://localhost:5173/',
-                    failure: 'http://localhost:3000/api/payment/failure',
+                    failure: 'http://localhost:5173/',
                     pending: 'http://localhost:3000/api/payment/pending'
                 },
                 // auto_return: 'approved', // Hace que el usuario sea redirigido automáticamente a la URL de retorno
