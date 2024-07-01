@@ -81,8 +81,8 @@ const perfil = async (req, res) => {
         }
 
         // res.json({ id: user._id, email: user.email, rol: user.rol });
-        console.log({ id: user._id, name: user.name, lastname: user.lastname, email: user.email, rol: user.rol });
-        res.json({ id: user._id, name: user.name, lastname: user.lastname, email: user.email, rol: user.rol });
+        console.log({ _id: user._id, name: user.name, lastname: user.lastname, email: user.email, rol: user.rol });
+        res.json({ _id: user._id, name: user.name, lastname: user.lastname, email: user.email, rol: user.rol });
         // res.json({ id: user._id });
         // res.json(user._id);
     } catch (error) {

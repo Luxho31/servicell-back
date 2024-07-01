@@ -4,6 +4,9 @@ import Usuario from "../models/Usuario.js";
 
 const addCarritoItemByUserId = async (req, res) => {
     const { replacement, user } = req.body;
+    // const {replacement} = req.body;
+    // const user = req.user;
+    // console.log(user)
 
     try {
 
@@ -13,7 +16,7 @@ const addCarritoItemByUserId = async (req, res) => {
         if (!repuesto) return res.status(404).json({ message: "Repuesto no encontrado" });
         if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
 
-        const existingItem = await Carrito.findOne({ replacement });
+        const existingItem = await Carrito.findOne({ replacement, user: usuario._id });
 
         if (existingItem) {
             existingItem.quantity += 1;
