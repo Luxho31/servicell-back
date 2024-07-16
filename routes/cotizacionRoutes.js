@@ -3,6 +3,7 @@ const router = Router();
 
 import { createCotizacion, getCotizaciones, updateCotizacion, sentEmail, generateInvoice, getCotizacionById } from "../controllers/cotizacionController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import upload from '../helpers/multer.js';
 
 router.post("/createCotizacion", createCotizacion)
 router.get("/getCotizaciones", authMiddleware, getCotizaciones);
@@ -10,7 +11,7 @@ router.get("/getCotizacionById/:id", authMiddleware, getCotizacionById);
 router.patch("/updateCotizacion/:id", authMiddleware, updateCotizacion);
 // router.delete("/deleteCotizacion/:id", authMiddleware, deleteCotizacion);
 
-router.post("/send-email/:id", authMiddleware, sentEmail);
+router.post("/send-email/:id", authMiddleware, upload.single('archivo'), sentEmail);
 router.post("/invoice/:id", authMiddleware, generateInvoice);
 
 export default router;

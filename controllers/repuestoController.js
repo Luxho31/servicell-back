@@ -29,6 +29,7 @@ const createRepuesto = async (req, res) => {
         }
 
         const result = await cloudinary.uploader.upload(req.file.path);
+        // const result = await cloudinary.uploader.upload(req.file.path, { folder: 'repuestos' });
         repuesto.image_url = result.secure_url;
 
         const repuestoGuardado = await repuesto.save();
@@ -75,6 +76,16 @@ const updateRepuesto = async (req, res) => {
     repuesto.description = req.body.description || repuesto.description;
     repuesto.price = req.body.price || repuesto.price;
     repuesto.stock = req.body.stock || repuesto.stock;
+    // repuesto.image_url = req.body.image_url || repuesto.image_url;
+    if (req.file) {
+        try {
+            const result = await cloudinary.uploader.upload(req.file.path);
+            repuesto.image_url = result.secure_url;
+            fs.unlinkSync(req.file.path)
+        } catch (error) {
+            return res.status(400).json({ msg: "Error al subir imagen", message: error.message });            
+        }
+    }
 
     try {
         const updatedRepuesto = await repuesto.save();

@@ -37,17 +37,20 @@ const updateCotizacion = async (req, res) => {
 const sentEmail = async (req, res) => {
     const cotizacion = await Cotizacion.findById(req.params.id);
     if (!cotizacion) return res.status(404).json({ msg: "Cotización no encontrada" });
+    if (!req.file) {
+        return res.status(400).json({ msg: "No se subió ningún archivo" });
+    }
 
     try {
-        upload(req, res, async (err) => {
-            if (err) {
-                console.error("Error al cargar el archivo:", err);
-                return res.status(500).json({ msg: "Error al subir el archivo" });
-            }
+        // upload(req, res, async (err) => {
+        //     if (err) {
+        //         console.error("Error al cargar el archivo:", err);
+        //         return res.status(500).json({ msg: "Error al subir el archivo" });
+        //     }
 
-            if (!req.file) {
-                return res.status(400).json({ msg: "No se subió ningún archivo" });
-            }
+            // if (!req.file) {
+            //     return res.status(400).json({ msg: "No se subió ningún archivo" });
+            // }
 
             const { name, email } = cotizacion;
             const { filename } = req.file;
@@ -57,7 +60,7 @@ const sentEmail = async (req, res) => {
             } else {
                 return res.status(500).json({ msg: "Error al enviar el correo" });
             }
-        });
+        // });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ msg: "Error al generar el PDF o enviar el correo" });
