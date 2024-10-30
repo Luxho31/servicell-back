@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
-const usuarioSchema = mongoose.Schema(
+const userSchema = mongoose.Schema(
     {
         name: {
             type: String,
@@ -16,17 +14,14 @@ const usuarioSchema = mongoose.Schema(
         },
         sex: {
             type: String,
-            required: true,
             trim: true,
         },
         birthdate: {
             type: String,
-            required: true,
             trim: true,
         },
         phone: {
             type: String,
-            required: true,
             trim: true,
         },
         email: {
@@ -37,13 +32,16 @@ const usuarioSchema = mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
-            unique: true,
+            // required: true,
             trim: true,
+        },
+        googleId: {
+            type: String,
+            unique: true,
+            sparse: true,  // Permite valores únicos sin necesidad de estar presentes en todos los documentos
         },
         rol: {
             type: String,
-            required: true,
             default: 'USER',
         },
         // token: {
@@ -56,22 +54,6 @@ const usuarioSchema = mongoose.Schema(
     }
 )
 
-// Encriptar constraseña
-usuarioSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) {
-        next();
-    }
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-});
-
-// Comparar contraseña
-usuarioSchema.methods.comprobarPassword = async function (
-    passwordFormulario
-) {
-    return await bcrypt.compare(passwordFormulario, this.password); // El metodo compare de bcrypt retorna "true" o "false"
-};
-
 // Exportacion del Schema
-const Usuario = mongoose.model('Usuario', usuarioSchema);
-export default Usuario;
+const User = mongoose.model('User', userSchema);
+export default User;

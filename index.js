@@ -1,19 +1,25 @@
 import express from 'express';
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from 'cookie-parser';
 import conectarDB from "./config/db.js";
-import usuarioRoutes from "./routes/usuarioRoutes.js";
 import cotizacionRoutes from "./routes/cotizacionRoutes.js";
 import repuestoRoutes from "./routes/repuestoRoutes.js";
 import carritoRoutes from "./routes/carritoRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
-import marcaRoutes from "./routes/marcaRoutes.js";
+import brandRoutes from "./routes/brand.routes.js";
+import auth2Routes from "./routes/auth2Routes.js";
+import authRoutes from "./routes/auth.routes.js";
+import "./config/passportConfig.js";
 
 // import mercadopago from "mercadopago"
 import { Preference, MercadoPagoConfig } from "mercadopago"
+import session from 'express-session';
+import passport from 'passport';
 
 const app = express();
 app.use(express.json())
+app.use(cookieParser());
 // app.use(express.urlencoded({ extended: true }));
 dotenv.config();
 conectarDB();
@@ -29,6 +35,7 @@ const corsOptions = {
             callback(new Error("No permitido por CORS"));
         }
     },
+    credentials: true
 };
 
 app.use(cors(corsOptions));
@@ -79,13 +86,27 @@ app.use(cors(corsOptions));
 // });
 // // Mercado pago
 
+// Configuración de express-session
+// app.use(session({
+//     secret: process.env.SESSION_SECRET || 'secret-key',
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: { secure: process.env.NODE_ENV === 'production' }
+// }));
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// // Rutas de autenticación
+// app.use('/auth', auth2Routes);
+
 // Endpoints
-app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/cotizaciones", cotizacionRoutes);
 app.use("/api/repuestos", repuestoRoutes);
 app.use("/api/carrito", carritoRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/Marcas", marcaRoutes);
+app.use("/api/brands", brandRoutes);
 
 const PORT = process.env.PORT || 3000;
 

@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-const marcaSchema = mongoose.Schema(
+const brandSchema = mongoose.Schema(
     {
-        Marca: {
+        brand: {
             type: String,
             required: true,
             trim: true,
         },
-        Modelo: {
+        model: {
             type: String,
             required: true,
             trim: true,
@@ -18,4 +18,4 @@ const marcaSchema = mongoose.Schema(
     }
 );
 
-export default mongoose.model("Registrar_Marca", marcaSchema);
+export default mongoose.model("brand", brandSchema);

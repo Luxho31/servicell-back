@@ -1,36 +1,13 @@
-import NMarca from "../models/marca.js";
-
-// GET - Listar todas las marcas
-const listarMarcas = async (req, res) => {
-    try {
-        const marcas = await NMarca.find();
-        return res.status(200).json(marcas);
-    } catch (error) {
-        return res.status(500).json({ msg: "Hubo un problema al listar las marcas" });
-    }
-};
-
-// GET - Obtener una marca por ID
-const obtenerMarcaId = async (req, res) => {
-    try {
-        const marca = await NMarca.findById(req.params.id);
-        if (!marca) {
-            return res.status(404).json({ msg: "Marca no encontrada" });
-        }
-        return res.status(200).json(marca);
-    } catch (error) {
-        return res.status(500).json({ msg: "Hubo un problema al obtener la marca" });
-    }
-};
+import Brand from "../models/marca.model.js";
 
 // POST - Registrar una nueva marca
-const registrarMarca = async (req, res) => {
+const createBrand = async (req, res) => {
     try {
-        const { Marca, Modelo } = req.body;
+        const { brand, model } = req.body;
 
-        const nuevaMarca = new NMarca({
-            Marca,
-            Modelo,
+        const nuevaMarca = new Brand({
+            brand,
+            model,
         });
 
         const marcaGuardada = await nuevaMarca.save();
@@ -41,18 +18,41 @@ const registrarMarca = async (req, res) => {
     }
 };
 
-// PUT - Modificar una marca por ID
-const modificarMarca = async (req, res) => {
+// GET - Listar todas las marcas
+const getBrands = async (req, res) => {
     try {
-        const { Marca, Modelo } = req.body;
-        const marca = await NMarca.findById(req.params.id);
+        const marcas = await Brand.find();
+        return res.status(200).json(marcas);
+    } catch (error) {
+        return res.status(500).json({ msg: "Hubo un problema al listar las marcas" });
+    }
+};
+
+// GET - Obtener una marca por ID
+const getBrand = async (req, res) => {
+    try {
+        const marca = await Brand.findById(req.params.id);
+        if (!marca) {
+            return res.status(404).json({ msg: "Marca no encontrada" });
+        }
+        return res.status(200).json(marca);
+    } catch (error) {
+        return res.status(500).json({ msg: "Hubo un problema al obtener la marca" });
+    }
+};
+
+// PUT - Modificar una marca por ID
+const updateBrand = async (req, res) => {
+    try {
+        const { brand, model } = req.body;
+        const marca = await Brand.findById(req.params.id);
 
         if (!marca) {
             return res.status(404).json({ msg: "Marca no encontrada" });
         }
 
-        marca.Marca = Marca || marca.Marca;
-        marca.Modelo = Modelo || marca.Modelo;
+        marca.brand = brand || marca.brand;
+        marca.model = model || marca.model;
 
         const marcaActualizada = await marca.save();
         return res.status(200).json(marcaActualizada);
@@ -62,9 +62,9 @@ const modificarMarca = async (req, res) => {
 };
 
 // DELETE - Eliminar una marca por ID
-const eliminarMarca = async (req, res) => {
+const deleteBrand = async (req, res) => {
     try {
-        const marca = await NMarca.findById(req.params.id);
+        const marca = await Brand.findById(req.params.id);
 
         if (!marca) {
             return res.status(404).json({ msg: "Marca no encontrada" });
@@ -77,4 +77,4 @@ const eliminarMarca = async (req, res) => {
     }
 };
 
-export { listarMarcas, obtenerMarcaId, registrarMarca, modificarMarca, eliminarMarca };
+export { getBrands, getBrand, createBrand, updateBrand, deleteBrand };

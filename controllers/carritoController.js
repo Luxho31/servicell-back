@@ -1,6 +1,6 @@
 import Carrito from "../models/Carrito.js";
 import Repuesto from "../models/Repuesto.js";
-import Usuario from "../models/Usuario.js";
+import Usuario from "../models/user.model.js";
 
 const addCarritoItemByUserId = async (req, res) => {
     const { replacement, user } = req.body;
